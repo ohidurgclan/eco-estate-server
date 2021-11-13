@@ -66,7 +66,7 @@ async function run() {
         });
 
         // Get Api by users email
-        app.get("/userservice/:email", async (req, res) => {
+        app.get("/user_order/:email", async (req, res) => {
         const cursor = userCollection.find({ email: req.params.email });
         const orders = await cursor.toArray();
         res.send(orders);
