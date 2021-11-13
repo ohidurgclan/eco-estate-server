@@ -20,14 +20,8 @@ async function run() {
         const database = client.db('eco_estate');
         const servicesCollection = database.collection('services');
         const userCollection = database.collection('userservices');
-        
-        // Add Service
-        app.post('/services', async (req, res) => {
-            const serviceItem = req.body;
-            const result = await servicesCollection.insertOne(serviceItem);
-            console.log(result);
-            res.json(result)
-        });
+        const userReview = database.collection('user_review');
+        const userOrder = database.collection('user_order');
 
         // Get Service API
         app.get('/services', async (req, res) => {
@@ -35,12 +29,42 @@ async function run() {
             const packages = await cursor.toArray();
             res.send(packages);
         });
+        // Add Service
+        app.post('/services', async (req, res) => {
+            const serviceItem = req.body;
+            const result = await servicesCollection.insertOne(serviceItem);
+            console.log(result);
+            res.json(result)
+        });
+        // Add Review
+        app.post('/user_review', async (req, res) => {
+            const reviewItem = req.body;
+            const result = await userReview.insertOne(reviewItem);
+            console.log(result);
+            res.json(result)
+        });
+        // Get Review
+        app.get('/user_review', async (req, res) => {
+            const cursor = userReview.find({});
+            const review = await cursor.toArray();
+            res.send(review);
+        });
+
+        // Place Order
+        app.post('/user_order', async (req, res) => {
+            const orderItem = req.body;
+            const result = await userOrder.insertOne(orderItem);
+            console.log(result);
+            res.json(result)
+        });
+
         // Find API
         app.get("/userservice", async (req, res) => {
         const cursor = userCollection.find({});
         const orders = await cursor.toArray();
         res.send(orders);
         });
+
         // Get Api by users email
         app.get("/userservice/:email", async (req, res) => {
         const cursor = userCollection.find({ email: req.params.email });
