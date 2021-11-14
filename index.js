@@ -65,14 +65,27 @@ async function run() {
             console.log(result);
             res.json(result)
         });
+        
         // Get Orders
         app.get('/user_order', async (req, res) => {
             const cursor = userOrder.find({});
             const order = await cursor.toArray();
             res.send(order);
         });
+        
+        app.get('/user_order/:userEmail', async (req, res) => {
+            const cursor = userOrder.find({userEmail: req.params.userEmail});
+            const order = await cursor.toArray();
+            res.send(order);
+        });
 
-
+        // Cancel Order
+        app.delete("/user_order/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await userOrder.deleteOne(query);
+        res.json(result);
+        });
         // Create Users
         app.post('/users', async (req, res) => {
             const user = req.body;
@@ -111,21 +124,19 @@ async function run() {
             res.json({ admin: isAdmin});
         });
 
-
-        // Find API
-        app.get("/userservice", async (req, res) => {
-        const cursor = userCollection.find({});
-        const orders = await cursor.toArray();
-        res.send(orders);
-        });
-
         // Get Api by users email
         app.get("/user_order/:email", async (req, res) => {
         const cursor = userCollection.find({ email: req.params.email });
         const orders = await cursor.toArray();
         res.send(orders);
         });
-    
+        
+        app.get("/user_order/:userEmail", async (req, res) => {
+        const cursor = userOrder.find({ userEmail: req.params.userEmail });
+        const userOrders = await cursor.toArray();
+        res.send(userOrders);
+        });
+
         // Get a user data
         app.get("/user_order/:id", async (req, res) => {
         const id = req.params.id;
@@ -157,6 +168,14 @@ async function run() {
 
         res.json(result);
         });
+        
+        // Find API
+        app.get("/userservice", async (req, res) => {
+        const cursor = userCollection.find({});
+        const orders = await cursor.toArray();
+        res.send(orders);
+        });
+    
     }
     finally {
         // await client.close();
