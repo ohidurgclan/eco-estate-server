@@ -51,6 +51,21 @@ async function run() {
             console.log(result);
             res.json(result)
         });
+        // Get Review by User Email
+        app.get('/user_review/:userEmail', async (req, res) => {
+            const cursor = userReview.find({userEmail: req.params.userEmail});
+            const order = await cursor.toArray();
+            res.send(order);
+        });
+        // Delete Review By User
+                // Delete Service
+        app.delete("/user_review/:id", async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: ObjectId(id) };
+        const result = await userReview.deleteOne(query);
+        res.json(result);
+        });
+
         // Get Review
         app.get('/user_review', async (req, res) => {
             const cursor = userReview.find({});
@@ -159,23 +174,6 @@ async function run() {
         const resut = await userOrder.updateOne(filter, updateDoc, options);
         res.json(resut);
         });
-        
-        // Delete Order
-        app.delete("/userservice/:id", async (req, res) => {
-        const id = req.params.id;
-        const query = { _id: ObjectId(id) };
-        const result = await userCollection.deleteOne(query);
-
-        res.json(result);
-        });
-        
-        // Find API
-        app.get("/userservice", async (req, res) => {
-        const cursor = userCollection.find({});
-        const orders = await cursor.toArray();
-        res.send(orders);
-        });
-    
     }
     finally {
         // await client.close();
